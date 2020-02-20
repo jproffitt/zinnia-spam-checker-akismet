@@ -54,7 +54,12 @@ Usage example::
 
 import os
 import socket
-from urllib import urlencode
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    # python 2
+    from urllib import urlencode
 
 if hasattr(socket, 'setdefaulttimeout'):
     # Set the default timeout on sockets to 5 seconds
