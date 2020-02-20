@@ -55,6 +55,8 @@ Usage example::
 import os
 import socket
 
+from django.utils.encoding import force_bytes, force_str
+
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -102,7 +104,7 @@ if urllib2 is None:
                         (url, req.status_code))
 else:
     def _fetch_url(url, data, headers):
-        req = urllib2.Request(url, data, headers)
+        req = urllib2.Request(url, force_bytes(data), headers)
         h = urllib2.urlopen(req)
         resp = h.read()
         return resp
@@ -191,7 +193,7 @@ class Akismet(object):
         # so if akismet is down it will raise an HTTPError or URLError
         headers = {'User-Agent': self.user_agent}
         resp = self._safe_request(url, urlencode(data), headers)
-        if resp.lower() == 'valid':
+        if force_str(resp.lower()) == 'valid':
             return True
         else:
             return False
@@ -324,7 +326,7 @@ class Akismet(object):
         resp = self._safe_request(url, urlencode(data), headers)
         if debug:
             return resp
-        resp = resp.lower()
+        resp = force_str(resp.lower())
         if resp == 'true':
             return True
         elif resp == 'false':
