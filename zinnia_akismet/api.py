@@ -87,7 +87,10 @@ urllib2 = None
 try:
     from google.appengine.api import urlfetch
 except ImportError:
-    import urllib2
+    try:
+        import urllib.request as urllib2
+    except ImportError:
+        import urllib2
 
 if urllib2 is None:
     def _fetch_url(url, data, headers):
